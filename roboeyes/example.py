@@ -21,8 +21,8 @@ except ImportError:
 
 
 def main():
-    # Create the eye renderer
-    eyes = RoboEyes(width=240, height=320)
+    # Create the eye renderer (landscape orientation)
+    eyes = RoboEyes(width=320, height=240)
 
     # Configure eye size (optional - defaults work fine)
     eyes.set_width(70)
@@ -34,11 +34,11 @@ def main():
     eyes.set_autoblinker(True, interval=3.0, variation=1.5)
     eyes.set_idle_mode(True, interval=2.0, variation=1.0)
 
-    # Create the display
+    # Create the display (landscape orientation)
     display = WaveshareDisplay(
-        width=240,
-        height=320,
-        rotation=0,      # Try 180 if upside down
+        width=320,
+        height=240,
+        rotation=90,     # 90 for landscape, try 270 if upside down
         backlight=50     # Brightness 0-100
     )
 

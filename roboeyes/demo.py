@@ -29,9 +29,9 @@ def run_demo(display_type: str = "waveshare", lib_path: str = None):
     print("=" * 50)
     print()
 
-    # Create eyes
+    # Create eyes (landscape orientation)
     print("Initializing RoboEyes...")
-    eyes = RoboEyes(width=240, height=320)
+    eyes = RoboEyes(width=320, height=240)
 
     # Configure eye appearance
     eyes.set_width(70, 70)
@@ -44,18 +44,18 @@ def run_demo(display_type: str = "waveshare", lib_path: str = None):
     if display_type == "waveshare":
         try:
             display = WaveshareDisplay(
-                width=240,
-                height=320,
-                rotation=0,
+                width=320,
+                height=240,
+                rotation=90,
                 backlight=50,
                 lib_path=lib_path
             )
         except ImportError as e:
             print(f"Warning: {e}")
             print("Falling back to mock display...")
-            display = MockDisplay(width=240, height=320)
+            display = MockDisplay(width=320, height=240)
     else:
-        display = MockDisplay(width=240, height=320)
+        display = MockDisplay(width=320, height=240)
 
     print("Display initialized!")
     print()

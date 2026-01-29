@@ -93,22 +93,22 @@ class WaveshareDisplay:
 
     def show(self, image: Image.Image):
         """Display a PIL Image on the screen."""
-        # Handle size mismatch
-        if image.size != (self.width, self.height):
-            if image.size == (self.height, self.width):
-                # Dimensions swapped - rotate
-                image = image.transpose(Image.Transpose.ROTATE_90)
-            else:
-                # Resize to fit
-                image = image.resize((self.width, self.height), Image.Resampling.LANCZOS)
+        # The physical LCD is always 240x320 (portrait)
+        # For landscape mode (320x240), we rotate the image
 
-        # Apply rotation if needed
+        # Apply rotation to convert to physical LCD orientation
         if self.rotation == 90:
-            image = image.transpose(Image.Transpose.ROTATE_90)
+            # Landscape: rotate 90° CCW (or 270° CW)
+            image = image.transpose(Image.Transpose.ROTATE_270)
         elif self.rotation == 180:
             image = image.transpose(Image.Transpose.ROTATE_180)
         elif self.rotation == 270:
-            image = image.transpose(Image.Transpose.ROTATE_270)
+            # Landscape flipped: rotate 90° CW
+            image = image.transpose(Image.Transpose.ROTATE_90)
+
+        # Ensure correct size for physical display (240x320)
+        if image.size != (240, 320):
+            image = image.resize((240, 320), Image.Resampling.LANCZOS)
 
         # Send to display
         self.lcd.ShowImage(image)
