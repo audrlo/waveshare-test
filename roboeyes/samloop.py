@@ -71,12 +71,10 @@ def main():
     print("Running! Press Ctrl+C to stop.")
     print()
 
-    # Mood cycle: DEFAULT -> HAPPY -> DEFAULT (with curious) -> repeat
+    # Mood cycle: DEFAULT -> HAPPY -> repeat
     moods = [
-        ("default", Mood.DEFAULT, False),
-        ("happy", Mood.HAPPY, False),
-        ("default", Mood.DEFAULT, False),
-        ("curious", Mood.DEFAULT, True),
+        ("default", Mood.DEFAULT),
+        ("happy", Mood.HAPPY),
     ]
 
     try:
@@ -91,17 +89,8 @@ def main():
             # Check if time to change mood
             if now - last_mood_change >= mood_duration:
                 current_mood_idx = (current_mood_idx + 1) % len(moods)
-                name, mood, curious = moods[current_mood_idx]
+                name, mood = moods[current_mood_idx]
                 eyes.set_mood(mood)
-                eyes.set_curiosity(curious)
-
-                # When curious, enable idle looking around
-                if curious:
-                    eyes.set_idle_mode(True, interval=1.0, variation=0.5)
-                else:
-                    eyes.set_idle_mode(False)
-                    eyes.set_position(0)  # Center
-
                 print(f"Mood: {name}")
                 last_mood_change = now
 
