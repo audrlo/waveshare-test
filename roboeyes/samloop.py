@@ -5,6 +5,7 @@ Sam's Eye Loop - Large sky blue eyes cycling through moods.
 
 import sys
 import time
+import random
 
 # Add Waveshare library path
 sys.path.insert(0, '/home/sam-pi/LCD_Module_RPI_code/RaspberryPi/python')
@@ -57,9 +58,6 @@ def main():
     eyes.set_border_radius(border_radius)
     eyes.set_space_between(space_between)
 
-    # Enable regular blinking
-    eyes.set_autoblinker(True, interval=3.5, variation=1.0)
-
     # Create display
     display = WaveshareDisplay(
         width=screen_width,
@@ -70,8 +68,29 @@ def main():
 
     print("Running! Press Ctrl+C to stop.")
 
+    # Double-blink timing (2 to 3.5 seconds between double-blinks)
+    def next_blink_time():
+        return time.time() + random.uniform(2.0, 3.5)
+
+    next_blink = next_blink_time()
+    second_blink_pending = False
+    second_blink_time = 0
+
     try:
         while True:
+            now = time.time()
+
+            # Check for double-blink
+            if now >= next_blink and not second_blink_pending:
+                eyes.blink()
+                second_blink_pending = True
+                second_blink_time = now + 0.25  # Second blink after 0.25s
+
+            if second_blink_pending and now >= second_blink_time:
+                eyes.blink()
+                second_blink_pending = False
+                next_blink = next_blink_time()
+
             frame = eyes.update()
             display.show(frame)
 
