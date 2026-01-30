@@ -10,9 +10,9 @@ import time
 sys.path.insert(0, '/home/sam-pi/LCD_Module_RPI_code/RaspberryPi/python')
 
 try:
-    from roboeyes import RoboEyes, Mood, WaveshareDisplay
+    from roboeyes import RoboEyes, WaveshareDisplay
 except ImportError:
-    from eyes import RoboEyes, Mood
+    from eyes import RoboEyes
     from display import WaveshareDisplay
 
 
@@ -69,32 +69,9 @@ def main():
     )
 
     print("Running! Press Ctrl+C to stop.")
-    print()
-
-    # Mood cycle: DEFAULT -> HAPPY -> repeat
-    moods = [
-        ("default", Mood.DEFAULT),
-        ("happy", Mood.HAPPY),
-    ]
 
     try:
-        start_time = time.time()
-        mood_duration = 4.0  # seconds per mood
-        current_mood_idx = 0
-        last_mood_change = start_time
-
         while True:
-            now = time.time()
-
-            # Check if time to change mood
-            if now - last_mood_change >= mood_duration:
-                current_mood_idx = (current_mood_idx + 1) % len(moods)
-                name, mood = moods[current_mood_idx]
-                eyes.set_mood(mood)
-                print(f"Mood: {name}")
-                last_mood_change = now
-
-            # Update and display
             frame = eyes.update()
             display.show(frame)
 
