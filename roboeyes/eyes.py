@@ -151,6 +151,8 @@ class RoboEyes:
         self._is_blinking = False
         self._blink_start_time = 0.0
         self._blink_duration = 0.15
+        self._blink_left = True
+        self._blink_right = True
 
         # Idle timing
         self._idle_timer = 0.0
@@ -632,11 +634,7 @@ class RoboEyes:
         Returns:
             PIL Image ready for display
         """
-        # Frame rate limiting
-        now = time.time()
-        elapsed = now - self._last_frame_time
-        if elapsed < self.frame_interval:
-            time.sleep(self.frame_interval - elapsed)
+        # Track frame time (no sleep - let display be the limiter)
         self._last_frame_time = time.time()
 
         # Process behaviors and animations
