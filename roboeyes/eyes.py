@@ -524,24 +524,32 @@ class RoboEyes:
                   width: float, height: float, radius: float,
                   is_left: bool = True):
         """Draw a single eye with mood modifications."""
-        # Clamp dimensions
-        if width < 2 or height < 2:
+        # Ensure dimensions are valid integers
+        x = int(x)
+        y = int(y)
+        width = int(width)
+        height = int(height)
+        radius = int(radius)
+
+        # Skip if too small
+        if width < 4 or height < 4:
             return
 
-        radius = min(radius, width / 2, height / 2)
+        radius = min(radius, width // 2, height // 2)
 
         # Draw main eye shape
-        draw.rounded_rectangle(
-            [x, y, x + width, y + height],
-            radius=radius,
-            fill=self.eye_color
-        )
+        x2 = x + width
+        y2 = y + height
+        if x2 > x and y2 > y:
+            draw.rounded_rectangle([x, y, x2, y2], radius=radius, fill=self.eye_color)
 
-        # Draw mood overlays
+        # Draw mood overlays (only if eye is large enough)
+        if height < 20:
+            return
+
         if self._tired:
             # Tired: eyelid drooping from top
-            lid_height = height * 0.4
-            # Draw triangle eyelid
+            lid_height = int(height * 0.4)
             if is_left:
                 points = [
                     (x - 2, y - 2),
@@ -558,16 +566,14 @@ class RoboEyes:
 
         elif self._angry:
             # Angry: eyelid angled inward (opposite of tired)
-            lid_height = height * 0.35
+            lid_height = int(height * 0.35)
             if is_left:
-                # Left eye: higher on outer edge
                 points = [
                     (x - 2, y - 2),
                     (x + width + 2, y - 2),
                     (x - 2, y + lid_height),
                 ]
             else:
-                # Right eye: higher on outer edge
                 points = [
                     (x - 2, y - 2),
                     (x + width + 2, y - 2),
@@ -577,14 +583,15 @@ class RoboEyes:
 
         elif self._happy:
             # Happy: squinted from bottom (smile)
-            lid_height = height * 0.4
+            lid_height = int(height * 0.4)
             lid_y = y + height - lid_height
-            # Round rectangle overlay on bottom
-            draw.rounded_rectangle(
-                [x - 2, lid_y, x + width + 2, y + height + 2],
-                radius=radius,
-                fill=self.bg_color
-            )
+            y2_overlay = y + height + 2
+            if y2_overlay > lid_y:
+                draw.rounded_rectangle(
+                    [x - 2, lid_y, x + width + 2, y2_overlay],
+                    radius=radius,
+                    fill=self.bg_color
+                )
 
     def _draw_sweat_drops(self, draw: ImageDraw.ImageDraw, eye_x: float, eye_y: float, eye_height: float):
         """Draw animated sweat drops near the eye."""
