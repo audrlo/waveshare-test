@@ -168,7 +168,7 @@ def main():
         width=screen_width,
         height=screen_height,
         rotation=90,
-        backlight=50
+        backlight=100
     )
 
     print("Running! Press Ctrl+C to stop.")
