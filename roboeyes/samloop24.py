@@ -45,10 +45,10 @@ class Waveshare24Display:
         # Import the correct library for 2.4" display
         LCD_2inch4 = self._import_waveshare_lib(lib_path)
 
-        # Initialize display
+        # Initialize display (skip clear() — it overloads SPI and times out;
+        # the first frame from the main loop will paint the screen anyway)
         self.lcd = LCD_2inch4.LCD_2inch4(rst=rst, dc=dc, bl=bl)
         self.lcd.Init()
-        self.lcd.clear()
         self.lcd.bl_DutyCycle(backlight)
 
     def _import_waveshare_lib(self, lib_path):
